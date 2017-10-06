@@ -43,7 +43,10 @@ class HurricancePrediction:
                         self._longtoint(hurricane[row]['Long']),
                         int(hurricane[row]['MaxWind']),
                         int(hurricane[row + 1]['Date']),
-                        int(hurricane[row + 1]['Time'])
+                        int(hurricane[row + 1]['Time']),
+                        self._lattoint(hurricane[row + 1]['Lat']),
+                        self._longtoint(hurricane[row + 1]['Long']),
+                        int(hurricane[row + 1]['MaxWind'])
                     ])
         return data
 
