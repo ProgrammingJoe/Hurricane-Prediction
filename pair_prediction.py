@@ -4,10 +4,13 @@ from sklearn.model_selection import KFold
 from hurricane_prediction import HurricancePrediction
 from sklearn.linear_model import LinearRegression
 
-def train_predict(X, y, kf):
+LATITUDE_ALPHA = 0.1
+LONGITUDE_ALPHA = 0.1
+MAXWIND_ALPHA = 0.1
+
+def train_predict(X, y, kf, accuracy_acceptance_range=0.1):
     accuracies = []
     counter = 0
-    accuracy_acceptance_range = 0.1
 
     for train_index, test_index in kf.split(X):
         X_train, X_test = X[train_index], X[test_index]
@@ -19,15 +22,15 @@ def train_predict(X, y, kf):
         correct = 0
         total = 0
         for row, value in zip(X_test, y_test):
-            if abs(regression_model.predict(row.reshape(1, -1))[0] - value) > accuracy_acceptance_range:
+            if abs(regression_model.predict(row.reshape(1, -1))[0] - value) < accuracy_acceptance_range:
                 correct += 1
             total += 1
 
-        print("Fold " + str(counter) + " had {0:.3f}% accuracy".format(correct/total))
+        print("Fold " + str(counter) + " had {0:.3f}% accuracy".format(correct/total*100))
         accuracies.append(correct/total)
         counter += 1
 
-    return("Average accuray across all folds was {0:.3f}%".format(sum(accuracies)/len(accuracies)))
+    return("Average accuray across all folds was {0:.3f}%".format(sum(accuracies)/len(accuracies)*100))
 
 def main():
     hurricane_predictor = HurricancePrediction()
@@ -43,11 +46,11 @@ def main():
     wind_col = data[:,9]
 
     print("Running latitude regression training and prediction")
-    print(train_predict(known_cols, lat_col, kf))
+    print(train_predict(known_cols, lat_col, kf, accuracy_acceptance_range=LATITUDE_ALPHA))
     print("Running longitude regression training and prediction")
-    print(train_predict(known_cols, long_col, kf))
+    print(train_predict(known_cols, long_col, kf, accuracy_acceptance_range=LONGITUDE_ALPHA))
     print("Running wind speed regression training and prediction")
-    print(train_predict(known_cols, wind_col, kf))
+    print(train_predict(known_cols, wind_col, kf, accuracy_acceptance_range=MAXWIND_ALPHA))
 
 if __name__ == "__main__":
     main()
