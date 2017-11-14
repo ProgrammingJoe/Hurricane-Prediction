@@ -23,11 +23,11 @@ def train_predict(X, y, kf):
                 correct += 1
             total += 1
 
-        print("Fold " + str(counter) + " had {0:.3f}% accuracy".format(correct/total))
+        print("Fold " + str(counter) + " had {0:.3f}% accuracy".format(correct/total*100))
         accuracies.append(correct/total)
         counter += 1
 
-    return("Average accuray across all folds was {0:.3f}%".format(sum(accuracies)/len(accuracies)))
+    return("Average accuray across all folds was {0:.3f}%".format(sum(accuracies)/len(accuracies)*100))
 
 def main():
     hurricane_predictor = HurricancePrediction()
